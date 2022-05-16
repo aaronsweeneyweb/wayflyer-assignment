@@ -37,6 +37,11 @@
     border-color: $color-error;
     color: $color-error;
   }
+
+  &--disabled {
+    color: $color-disabled;
+    pointer-events: none;
+  }
 }
 
 .tooltip {

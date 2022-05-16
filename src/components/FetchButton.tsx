@@ -73,6 +73,7 @@ const FetchButton: React.FC<Props> = ({ url, maxDuration, stateMessages, isDisab
         'fetch-button': true,
         'fetch-button--loading': isLoading,
         'fetch-button--error': isError,
+        'fetch-button--disabled': isDisabled,
       })}
       onClick={isLoading ? cancelRequest : fetchData}
       disabled={isDisabled}

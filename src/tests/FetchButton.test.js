@@ -41,7 +41,7 @@ describe('FetchButton Component', () => {
       expect(buttonLabel).toHaveTextContent('Launch Rocket');
     });
   
-    it('shows the default state tooltip on hover', () => {
+    it('shows the default state tooltip on hover', async () => {
       render(
         <FetchButton
           url={urlFiveSeconds}
@@ -50,11 +50,14 @@ describe('FetchButton Component', () => {
         />
       );
   
-      const tooltip = screen.getByTestId('tooltip-default');
-      fireEvent.mouseOver(tooltip);
+      const button = screen.getByTestId('fetch-button');
+      fireEvent.mouseOver(button);
   
-      expect(tooltip).toBeInTheDocument();
-      expect(tooltip).toHaveTextContent('Ignites the fuel');
+      await wait(() => {
+        const tooltip = screen.getByTestId('tooltip-default');
+        expect(tooltip).toBeInTheDocument();
+        expect(tooltip).toHaveTextContent('Ignites the fuel');
+      });
     });
 
     it('goes back to default state after a successful fetch', async () => {
@@ -79,8 +82,8 @@ describe('FetchButton Component', () => {
         expect(buttonLabel).toHaveTextContent('Launch Rocket');
       });
     });
-  
-    it('is disabled when the isDisabled prop is true', () => {
+
+    it('is disabled when the isDisabled prop is true & does not show the tooltip on hover', async () => {
       render(
         <FetchButton
           url={urlOneSecond}
@@ -91,8 +94,14 @@ describe('FetchButton Component', () => {
       );
   
       const button = screen.getByTestId('fetch-button');
-  
+      fireEvent.mouseOver(button);
+
       expect(button).toBeDisabled()
+
+      await wait(() => {
+        const tooltip = screen.getByTestId('tooltip-default');
+        expect(tooltip).not.toBeInTheDocument()
+      });
     });
 
   });
