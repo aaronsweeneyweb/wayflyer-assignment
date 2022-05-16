@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import LoadingSpinner from './LoadingSpinner';
 import classNames from 'classnames';
 
 interface StateMessages {
@@ -80,13 +81,18 @@ const FetchButton: React.FC<Props> = ({ url, maxDuration, stateMessages, isDisab
       {
         isLoading && !isError &&
         <div>
-          <div>
-            <span data-testid="fetch-button-label">{stateMessages.loading.label}</span>
-            <span data-testid="loading-spinner"></span>
+          <div className="fetch-button__contents">
+            <div
+              className="fetch-button__label"
+              data-testid="fetch-button-label"
+            >
+              {stateMessages.loading.label}
+            </div>
+            <div><LoadingSpinner /></div>
           </div>
           <div
             data-testid="tooltip-loading"
-            className="tooltip"
+            className="tooltip tooltip--loading"
           >
             {stateMessages.loading.tooltip}
           </div>
@@ -95,7 +101,12 @@ const FetchButton: React.FC<Props> = ({ url, maxDuration, stateMessages, isDisab
       {
         !isLoading && !isError &&
         <div>
-          <div data-testid="fetch-button-label">{stateMessages.default.label}</div>
+          <div
+            className="fetch-button__label"
+            data-testid="fetch-button-label"
+          >
+            {stateMessages.default.label}
+          </div>
           <div
             data-testid="tooltip-default"
             className="tooltip"
@@ -107,7 +118,12 @@ const FetchButton: React.FC<Props> = ({ url, maxDuration, stateMessages, isDisab
       {
         !isLoading && isError &&
         <div>
-          <div data-testid="fetch-button-label">{stateMessages.error.label}</div>
+          <div
+            className="fetch-button__label"
+            data-testid="fetch-button-label"
+          >
+            {stateMessages.error.label}
+          </div>
           <div
             data-testid="tooltip-error"
             className="tooltip tooltip--error"

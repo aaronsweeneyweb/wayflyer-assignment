@@ -1,4 +1,6 @@
+@import './styles/colors';
 @import './styles/fetch-button';
+@import './styles/loading-spinner';
 
 body {
   margin: 40px;
@@ -12,4 +14,10 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.App {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
 }
