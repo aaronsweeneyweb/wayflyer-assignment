@@ -23,7 +23,7 @@ const stateMessages = {
   }
 };
 
-describe('Button Component', () => {
+describe('FetchButton Component', () => {
 
   describe('Default state', () => {
 
@@ -36,9 +36,9 @@ describe('Button Component', () => {
         />
       );
   
-      const button = screen.getByTestId('button');
+      const buttonLabel = screen.getByTestId('fetch-button-label');
   
-      expect(button).toHaveTextContent('Launch Rocket');
+      expect(buttonLabel).toHaveTextContent('Launch Rocket');
     });
   
     it('shows the default state tooltip on hover', () => {
@@ -50,7 +50,7 @@ describe('Button Component', () => {
         />
       );
   
-      const tooltip = screen.getByTestId('tooltip');
+      const tooltip = screen.getByTestId('tooltip-default');
       fireEvent.mouseOver(tooltip);
   
       expect(tooltip).toBeInTheDocument();
@@ -66,12 +66,17 @@ describe('Button Component', () => {
         />
       );
   
-      const button = screen.getByTestId('button');
+      const button = screen.getByTestId('fetch-button');
+      const buttonLabel = screen.getByTestId('fetch-button-label');
+
       fireEvent.click(button);
   
-      expect(button).toHaveTextContent('Launching');
       await wait(() => {
-        expect(button).toHaveTextContent('Launch Rocket');
+        expect(buttonLabel).toHaveTextContent('Launching');
+      });
+
+      await wait(() => {
+        expect(buttonLabel).toHaveTextContent('Launch Rocket');
       });
     });
   
@@ -85,7 +90,7 @@ describe('Button Component', () => {
         />
       );
   
-      const button = screen.getByTestId('button');
+      const button = screen.getByTestId('fetch-button');
   
       expect(button).toBeDisabled()
     });
@@ -94,7 +99,7 @@ describe('Button Component', () => {
 
   describe('Loading state', () => {
 
-    it('renders the loading state when the GET request is made (button is clicked)', () => {
+    it('renders the loading state when the GET request is made (button is clicked)', async () => {
       render(
         <FetchButton
           url={urlFiveSeconds}
@@ -103,13 +108,17 @@ describe('Button Component', () => {
         />
       );
   
-      const button = screen.getByTestId('button');
+      const button = screen.getByTestId('fetch-button');
+      const buttonLabel = screen.getByTestId('fetch-button-label');
+      
       fireEvent.click(button);
   
-      expect(button).toHaveTextContent('Launching');
+      await wait(() => {
+        expect(buttonLabel).toHaveTextContent('Launching');
+      })
     });
   
-    it('shows the loading state tooltip hover', () => {
+    it('shows the loading state tooltip hover', async () => {
       render(
         <FetchButton
           url={urlFiveSeconds}
@@ -118,21 +127,25 @@ describe('Button Component', () => {
         />
       );
   
-      const button = screen.getByTestId('button');
-      const tooltip = screen.getByTestId('tooltip');
+      const button = screen.getByTestId('fetch-button');
+      const buttonLabel = screen.getByTestId('fetch-button-label');
+
       fireEvent.click(button);
-      fireEvent.mouseOver(tooltip);
-  
-      expect(button).toHaveTextContent('Launching');
-      expect(tooltip).toBeInTheDocument();
-      expect(tooltip).toHaveTextContent('Cancel launch');
+      fireEvent.mouseOver(button);
+
+      await wait(() => {
+        const tooltip = screen.getByTestId('tooltip-loading');
+        expect(buttonLabel).toHaveTextContent('Launching');
+        expect(tooltip).toBeInTheDocument();
+        expect(tooltip).toHaveTextContent('Cancel launch');
+      });
     });
 
   });
 
   describe('Error state', () => {
 
-    it('renders the error state when the API request is cancelled (button is clicked during loading)', () => {
+    it('renders the error state when the API request is cancelled (button is clicked during loading)', async () => {
       render(
         <FetchButton
           url={urlFiveSeconds}
@@ -141,13 +154,14 @@ describe('Button Component', () => {
         />
       );
   
-      const button = screen.getByTestId('button');
-      const tooltip = screen.getByTestId('tooltip');
+      const button = screen.getByTestId('fetch-button');
+      const buttonLabel = screen.getByTestId('fetch-button-label');
   
       fireEvent.click(button);
       fireEvent.click(button);
   
-      expect(button).toHaveTextContent('Launch rocket');
+      const tooltip = screen.getByTestId('tooltip-error');
+      expect(buttonLabel).toHaveTextContent('Launch Rocket');
       expect(tooltip).toBeInTheDocument();
       expect(tooltip).toHaveTextContent('Ignition error');
     });
@@ -161,11 +175,13 @@ describe('Button Component', () => {
         />
       );
   
-      const button = screen.getByTestId('button');
+      const button = screen.getByTestId('fetch-button');
+      const buttonLabel = screen.getByTestId('fetch-button-label');
+
       fireEvent.click(button);
   
       await wait(() => {
-        expect(button).toHaveTextContent('Launch rocket');
+        expect(buttonLabel).toHaveTextContent('Launch Rocket');
       });
     });
 

@@ -1,0 +1,62 @@
+.fetch-button {
+  width: 200px;
+  position: relative;
+  
+  &:hover .tooltip {
+    display: block;
+  }
+  
+  &--loading {
+    border-color: orange;
+    color: orange;
+  }
+  
+  &--loading .tooltip {
+    background-color: orange;
+  }
+  
+  &--error {
+    display: block;
+    border-color: red;
+    color: red;
+  }
+}
+
+.tooltip {
+  display: none;
+  position: absolute;
+  top: 22px;
+  left: 0px;
+  width: 100%;
+  color: white;
+
+  background-color: black;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent black transparent;
+  }
+
+  &--loading {
+    background-color: orange;
+
+    &::after {
+      border-color: transparent transparent orange transparent;
+    }
+  }
+
+  &--error {
+    display: block;
+    background-color: red;
+
+    &::after {
+      border-color: transparent transparent red transparent;
+    }
+  }
+}
