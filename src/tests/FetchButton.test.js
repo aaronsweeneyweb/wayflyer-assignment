@@ -111,7 +111,7 @@ describe('FetchButton Component', () => {
       const button = screen.getByTestId('fetch-button');
       fireEvent.mouseOver(button);
       const tooltip = screen.getByTestId('tooltip-default');
-      
+
       expect(button).toHaveStyle('pointer-events: none');
       expect(tooltip).toHaveStyle('display: none')
     });
@@ -119,6 +119,24 @@ describe('FetchButton Component', () => {
   });
 
   describe('Loading state', () => {
+
+    it('renders the loading state when passed into the currentState prop', () => {
+      render(
+        <FetchButton
+          url={urlOneSecond}
+          maxDuration={maxDurationTwoSeconds}
+          stateMessages={stateMessages}
+          currentState={'loading'}
+        />
+      );
+
+      const buttonLabel = screen.getByTestId('fetch-button-label');
+       fireEvent.mouseOver(button);
+      const tooltip = screen.getByTestId('tooltip-default');
+
+      expect(buttonLabel).toHaveTextContent('Launching');
+      expect(tooltip).toHaveTextContent('Cancel launch');
+    });
 
     it('renders the loading state when the GET request is made (button is clicked)', async () => {
       render(
@@ -166,6 +184,24 @@ describe('FetchButton Component', () => {
 
   describe('Error state', () => {
 
+    it('renders the error state when passed into the currentState prop', () => {
+      render(
+        <FetchButton
+          url={urlOneSecond}
+          maxDuration={maxDurationTwoSeconds}
+          stateMessages={stateMessages}
+          currentState={'error'}
+        />
+      );
+
+      const buttonLabel = screen.getByTestId('fetch-button-label');
+       fireEvent.mouseOver(button);
+      const tooltip = screen.getByTestId('tooltip-default');
+
+      expect(buttonLabel).toHaveTextContent('Launch Rocket');
+      expect(tooltip).toHaveTextContent('Ignition error');
+    });
+
     it('renders the error state when the API request is cancelled (button is clicked during loading)', async () => {
       render(
         <FetchButton
@@ -204,6 +240,23 @@ describe('FetchButton Component', () => {
       await wait(() => {
         expect(buttonLabel).toHaveTextContent('Launch Rocket');
       });
+    });
+
+    it('does not show the tooltip when disabled', async () => {
+      render(
+        <FetchButton
+          url={urlOneSecond}
+          maxDuration={maxDurationTwoSeconds}
+          currentState={'error'}
+          stateMessages={stateMessages}
+          isDisabled={true}
+        />
+      );
+  
+      const button = screen.getByTestId('fetch-button');
+      const tooltip = screen.getByTestId('tooltip-default');
+      
+      expect(tooltip).not.toBeInTheDocument()
     });
 
   });
