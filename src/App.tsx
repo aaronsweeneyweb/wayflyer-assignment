@@ -1,3 +1,4 @@
+import { Container } from './components/styles/Container.styled';
 import FetchButton from "./components/FetchButton";
 
 const stateMessages = {
@@ -17,13 +18,14 @@ const stateMessages = {
 
 function App() {
   return (
-    <div className="App">
+    <Container>
       <FetchButton
         url={'https://httpbin.org/delay/3'}
         maxDuration={4000}
         stateMessages={stateMessages}
+        isDisabled={false}
       />
-    </div>
+    </Container>
   );
 }
 

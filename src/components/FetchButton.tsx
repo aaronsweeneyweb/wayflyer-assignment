@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
-import LoadingSpinner from './LoadingSpinner';
-import classNames from 'classnames';
+import { Button, ButtonContents, Tooltip, LoadingSpinner } from './styles/FetchedButton.styled';
 
 interface StateMessages {
   default: {
@@ -19,7 +18,7 @@ interface StateMessages {
 
 interface Props {
   url: string,
-  maxDuration: number,
+  maxDuration?: number,
   stateMessages: StateMessages,
   isDisabled?: boolean
 }
@@ -56,6 +55,20 @@ const FetchButton: React.FC<Props> = ({ url, maxDuration, stateMessages, isDisab
     }
   }
 
+  const getButtonState = () => {
+    let buttonState = '';
+
+    if (isLoading && !isError) {
+      buttonState = 'loading';
+    } else if (!isLoading && !isError) {
+      buttonState = 'default';
+    } else if (!isLoading && isError) {
+      buttonState = 'error';
+    }
+
+    return buttonState;
+  }
+
   const cancelRequest = () => {
     setIsLoading(false);
     setIsError(true);
@@ -67,73 +80,61 @@ const FetchButton: React.FC<Props> = ({ url, maxDuration, stateMessages, isDisab
     clearTimeout(timeout);
   }
 
+  const buttonState = getButtonState();
+
   return (
-    <button
-      className={classNames({
-        'fetch-button': true,
-        'fetch-button--loading': isLoading,
-        'fetch-button--error': isError,
-        'fetch-button--disabled': isDisabled,
-      })}
+    <Button
       onClick={isLoading ? cancelRequest : fetchData}
       disabled={isDisabled}
       data-testid="fetch-button"
+      buttonState={buttonState}
     >
       {
-        isLoading && !isError &&
-        <div>
-          <div className="fetch-button__contents">
-            <div
-              className="fetch-button__label"
-              data-testid="fetch-button-label"
-            >
-              {stateMessages.loading.label}
-            </div>
-            <div><LoadingSpinner /></div>
-          </div>
-          <div
-            data-testid="tooltip-loading"
-            className="tooltip tooltip--loading"
-          >
-            {stateMessages.loading.tooltip}
-          </div>
-        </div>
-      }
-      {
-        !isLoading && !isError &&
-        <div>
-          <div
-            className="fetch-button__label"
-            data-testid="fetch-button-label"
-          >
+        buttonState === 'default' && 
+        <>
+          <div data-testid="fetch-button-label">
             {stateMessages.default.label}
           </div>
-          <div
+          <Tooltip
+            buttonState={buttonState}
             data-testid="tooltip-default"
-            className="tooltip"
           >
-            {stateMessages.default.tooltip}
-          </div>
-        </div>
+            <div>{stateMessages.default.tooltip}</div>
+          </Tooltip>
+        </>
       }
       {
-        !isLoading && isError &&
-        <div>
-          <div
-            className="fetch-button__label"
-            data-testid="fetch-button-label"
+        buttonState === 'loading' &&
+        <>
+          <ButtonContents>
+            <div data-testid="fetch-button-label">
+              {stateMessages.loading.label}
+            </div>
+            <LoadingSpinner buttonState={buttonState} />
+          </ButtonContents>
+          <Tooltip
+            buttonState={buttonState}
+            data-testid="tooltip-default"
           >
+            <div>{stateMessages.loading.tooltip}</div>
+          </Tooltip>
+        </>
+      }
+      {
+        buttonState === 'error' &&
+        <>
+          <div data-testid="fetch-button-label">
             {stateMessages.error.label}
           </div>
-          <div
+          <Tooltip
+            buttonState={buttonState}
             data-testid="tooltip-error"
-            className="tooltip tooltip--error"
           >
-            {stateMessages.error.tooltip}
-          </div>
-        </div>
+            <div>{stateMessages.error.tooltip}</div>
+          </Tooltip>
+        </>
       }
-    </button>
+    </Button>
   )
 }
 

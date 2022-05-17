@@ -83,7 +83,22 @@ describe('FetchButton Component', () => {
       });
     });
 
-    it('is disabled when the isDisabled prop is true & does not show the tooltip on hover', async () => {
+    it('is disabled when the isDisabled prop is true', async () => {
+      render(
+        <FetchButton
+          url={urlOneSecond}
+          maxDuration={maxDurationTwoSeconds}
+          stateMessages={stateMessages}
+          isDisabled={true}
+        />
+      );
+  
+      const button = screen.getByTestId('fetch-button');
+
+      expect(button).toBeDisabled()
+    });
+
+    it('does not show the tooltip on hover when disabled', async () => {
       render(
         <FetchButton
           url={urlOneSecond}
@@ -95,13 +110,10 @@ describe('FetchButton Component', () => {
   
       const button = screen.getByTestId('fetch-button');
       fireEvent.mouseOver(button);
-
-      expect(button).toBeDisabled()
-
-      await wait(() => {
-        const tooltip = screen.getByTestId('tooltip-default');
-        expect(tooltip).not.toBeInTheDocument()
-      });
+      const tooltip = screen.getByTestId('tooltip-default');
+      
+      expect(button).toHaveStyle('pointer-events: none');
+      expect(tooltip).toHaveStyle('display: none')
     });
 
   });
