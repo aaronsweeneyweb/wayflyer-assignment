@@ -26,7 +26,6 @@ const stateMessages = {
 describe('FetchButton Component', () => {
 
   describe('Default state', () => {
-
     it('renders the button in the default state', () => {
       render(
         <FetchButton
@@ -113,13 +112,11 @@ describe('FetchButton Component', () => {
       const tooltip = screen.getByTestId('tooltip-default');
 
       expect(button).toHaveStyle('pointer-events: none');
-      expect(tooltip).toHaveStyle('display: none')
+      expect(tooltip).toHaveStyle('display: none');
     });
-
   });
 
   describe('Loading state', () => {
-
     it('renders the loading state when passed into the currentState prop', () => {
       render(
         <FetchButton
@@ -130,8 +127,9 @@ describe('FetchButton Component', () => {
         />
       );
 
+      const button = screen.getByTestId('fetch-button');
       const buttonLabel = screen.getByTestId('fetch-button-label');
-       fireEvent.mouseOver(button);
+      fireEvent.mouseOver(button);
       const tooltip = screen.getByTestId('tooltip-default');
 
       expect(buttonLabel).toHaveTextContent('Launching');
@@ -179,11 +177,9 @@ describe('FetchButton Component', () => {
         expect(tooltip).toHaveTextContent('Cancel launch');
       });
     });
-
   });
 
   describe('Error state', () => {
-
     it('renders the error state when passed into the currentState prop', () => {
       render(
         <FetchButton
@@ -195,8 +191,7 @@ describe('FetchButton Component', () => {
       );
 
       const buttonLabel = screen.getByTestId('fetch-button-label');
-       fireEvent.mouseOver(button);
-      const tooltip = screen.getByTestId('tooltip-default');
+      const tooltip = screen.getByTestId('tooltip-error');
 
       expect(buttonLabel).toHaveTextContent('Launch Rocket');
       expect(tooltip).toHaveTextContent('Ignition error');
@@ -253,12 +248,9 @@ describe('FetchButton Component', () => {
         />
       );
   
-      const button = screen.getByTestId('fetch-button');
-      const tooltip = screen.getByTestId('tooltip-default');
+      const tooltip = screen.queryByTestId('tooltip-default');
       
-      expect(tooltip).not.toBeInTheDocument()
+      expect(tooltip).not.toBeInTheDocument();
     });
-
   });
-
 });
