@@ -3,7 +3,6 @@ import styled, { css } from 'styled-components';
 const colorDefault = '#000000';
 const colorLoading = '#f57901';
 const colorError = '#f40002';
-const colorDisabled = '#4a4a4a';
 const colorWhite = '#ffffff';
 
 const handleColor = buttonState => {
@@ -18,7 +17,7 @@ const handleColor = buttonState => {
 }
 
 export const Tooltip = styled.div`
-  display: ${({ buttonState }) => buttonState === 'error' ? 'block' : 'none'};
+  display: ${({ buttonState, disabled }) => (buttonState === 'error' && !disabled) ? 'block' : 'none'};
   position: absolute;
   top: 60px;
   left: -3px;
@@ -57,12 +56,15 @@ export const Button = styled.button`
   color: ${({ buttonState }) => handleColor(buttonState)};
   ${({ disabled }) => disabled && css`
     pointer-events: none;
-    color: ${colorDisabled};
   `}
 
   &:hover > ${Tooltip} {
     display: block;
   }
+`
+
+export const ButtonLabel = styled.div`
+  opacity: ${({ disabled }) => disabled ? '0.7' : '1'};
 `
 
 export const ButtonContents = styled.div`

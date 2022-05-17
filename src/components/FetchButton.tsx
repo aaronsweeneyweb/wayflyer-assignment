@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Button, ButtonContents, Tooltip, LoadingSpinner } from './styles/FetchedButton.styled';
+import { Button, ButtonContents, ButtonLabel, Tooltip, LoadingSpinner } from './styles/FetchedButton.styled';
 
 interface StateMessages {
   default: {
@@ -18,14 +18,14 @@ interface StateMessages {
 
 interface Props {
   url: string,
+  currentState?: string,
   maxDuration?: number,
   stateMessages: StateMessages,
   isDisabled?: boolean
 }
 
-const FetchButton: React.FC<Props> = ({ url, maxDuration, stateMessages, isDisabled }) => {
-  const [ isLoading, setIsLoading ] = useState<boolean>(false);
-  const [ isError, setIsError ] = useState<boolean>(false);
+const FetchButton: React.FC<Props> = ({ url, currentState, maxDuration, stateMessages, isDisabled }) => {
+  const [ buttonState, setButtonState ] = useState<string>(currentState || 'default');
 
   let abortController: any = useRef(null);
 
@@ -34,8 +34,7 @@ const FetchButton: React.FC<Props> = ({ url, maxDuration, stateMessages, isDisab
 
     try {
       abortController.current = new AbortController();
-      setIsLoading(true);
-      setIsError(false);
+      setButtonState('loading');
   
       if (maxDuration) {
         timeout = setTimeout(() => {
@@ -47,44 +46,28 @@ const FetchButton: React.FC<Props> = ({ url, maxDuration, stateMessages, isDisab
         signal: abortController.current.signal
       });
       const data = await response.json();
+      console.log(data);
+      setButtonState('default')
       resetTimeout(timeout);
-
     } catch {
       console.error('Failed')
+      setButtonState('error');
       resetTimeout(timeout);
     }
-  }
-
-  const getButtonState = () => {
-    let buttonState = '';
-
-    if (isLoading && !isError) {
-      buttonState = 'loading';
-    } else if (!isLoading && !isError) {
-      buttonState = 'default';
-    } else if (!isLoading && isError) {
-      buttonState = 'error';
-    }
-
-    return buttonState;
   }
 
   const cancelRequest = () => {
-    setIsLoading(false);
-    setIsError(true);
+    setButtonState('error');
     abortController.current.abort();
   }
 
   const resetTimeout = (timeout: any) => {
-    setIsLoading(false);
     clearTimeout(timeout);
   }
 
-  const buttonState = getButtonState();
-
   return (
     <Button
-      onClick={isLoading ? cancelRequest : fetchData}
+      onClick={buttonState === 'loading' ? cancelRequest : fetchData}
       disabled={isDisabled}
       data-testid="fetch-button"
       buttonState={buttonState}
@@ -92,9 +75,12 @@ const FetchButton: React.FC<Props> = ({ url, maxDuration, stateMessages, isDisab
       {
         buttonState === 'default' && 
         <>
-          <div data-testid="fetch-button-label">
+          <ButtonLabel
+            data-testid="fetch-button-label"
+            disabled={isDisabled}
+          >
             {stateMessages.default.label}
-          </div>
+          </ButtonLabel>
           <Tooltip
             buttonState={buttonState}
             data-testid="tooltip-default"
@@ -107,9 +93,12 @@ const FetchButton: React.FC<Props> = ({ url, maxDuration, stateMessages, isDisab
         buttonState === 'loading' &&
         <>
           <ButtonContents>
-            <div data-testid="fetch-button-label">
+            <ButtonLabel
+              data-testid="fetch-button-label"
+              disabled={isDisabled}
+            >
               {stateMessages.loading.label}
-            </div>
+            </ButtonLabel>
             <LoadingSpinner buttonState={buttonState} />
           </ButtonContents>
           <Tooltip
@@ -123,11 +112,15 @@ const FetchButton: React.FC<Props> = ({ url, maxDuration, stateMessages, isDisab
       {
         buttonState === 'error' &&
         <>
-          <div data-testid="fetch-button-label">
+          <ButtonLabel
+            data-testid="fetch-button-label"
+            disabled={isDisabled}
+          >
             {stateMessages.error.label}
-          </div>
+          </ButtonLabel>
           <Tooltip
             buttonState={buttonState}
+            disabled={isDisabled}
             data-testid="tooltip-error"
           >
             <div>{stateMessages.error.tooltip}</div>
