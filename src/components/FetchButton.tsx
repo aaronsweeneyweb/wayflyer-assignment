@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Button, ButtonContents, ButtonLabel, Tooltip, LoadingSpinner } from './styles/FetchedButton.styled';
+import { Button, ButtonContents, ButtonLabel, Tooltip, LoadingSpinner } from './styles/FetchButton.styled';
 
 interface StateMessages {
   default: {
